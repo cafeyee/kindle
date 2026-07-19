@@ -1,1 +1,123 @@
-var LAT=-41.2865,LON=174.7762;function weatherText(c){var m={0:"Clear",1:"Mainly Clear",2:"Partly Cloudy",3:"Cloudy",45:"Fog",48:"Fog",51:"Drizzle",53:"Drizzle",55:"Drizzle",61:"Rain",63:"Rain",65:"Heavy Rain",71:"Snow",80:"Rain Showers",95:"Thunderstorm"};return m[c]||"Weather"}function updateClock(){var n=new Date();document.getElementById("time").innerHTML=n.toLocaleTimeString("en-NZ",{hour:"2-digit",minute:"2-digit"});document.getElementById("date").innerHTML=n.toLocaleDateString("en-NZ",{weekday:"long",year:"numeric",month:"long",day:"numeric"})}function buildCalendar(){var n=new Date(),y=n.getFullYear(),m=n.getMonth();document.getElementById("monthTitle").innerHTML=n.toLocaleDateString("en-US",{month:"long",year:"numeric"});var f=new Date(y,m,1).getDay(),d=new Date(y,m+1,0).getDate(),h="<tr><th>Su</th><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th></tr>",c=1;for(var r=0;r<6;r++){h+="<tr>";for(var col=0;col<7;col++){if(r===0&&col<f)h+="<td></td>";else if(c>d)h+="<td></td>";else{var cls=c===n.getDate()?"today":"";h+="<td class='"+cls+"'>"+c+"</td>";c++}}h+="</tr>"}document.getElementById("calendar").innerHTML=h}function loadWeather(){var url='https://api.open-meteo.com/v1/forecast?latitude='+LAT+'&longitude='+LON+'&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=Pacific%2FAuckland';fetch(url).then(r=>r.json()).then(function(data){document.getElementById('temperature').innerHTML=Math.round(data.current.temperature_2m)+'°C';document.getElementById('humidity').innerHTML='Humidity: '+data.current.relative_humidity_2m+'%';document.getElementById('wind').innerHTML='Wind: '+Math.round(data.current.wind_speed_10m)+' km/h';document.getElementById('condition').innerHTML=weatherText(data.current.weather_code);var fh='';for(var i=1;i<=5;i++){var d=new Date(data.daily.time[i]);fh+="<div class='forecast-day'><div class='forecast-name'>"+d.toLocaleDateString('en-US',{weekday:'short'})+"</div><div class='forecast-temp'>"+Math.round(data.daily.temperature_2m_max[i])+"° / "+Math.round(data.daily.temperature_2m_min[i])+"°</div></div>"}document.getElementById('forecast-row').innerHTML=fh;document.getElementById('updated').innerHTML='Updated '+new Date().toLocaleTimeString('en-NZ')}).catch(function(){document.getElementById('condition').innerHTML='Weather unavailable'})}updateClock();buildCalendar();loadWeather();setInterval(updateClock,1000);setInterval(loadWeather,1800000);
+(function () {
+  "use strict";
+
+  var REFRESH_MS = 30 * 60 * 1000;
+  var CLOCK_MS = 30 * 1000;
+
+  function pad(number) {
+    return number < 10 ? "0" + number : String(number);
+  }
+
+  function dayName(day) {
+    return ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][day];
+  }
+
+  function shortDayName(day) {
+    return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][day];
+  }
+
+  function monthName(month) {
+    return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][month];
+  }
+
+  function updateClock() {
+    var now = new Date();
+    document.getElementById("time").innerHTML = pad(now.getHours()) + ":" + pad(now.getMinutes());
+    document.getElementById("date").innerHTML = dayName(now.getDay()) + ", " + now.getDate() + " " + monthName(now.getMonth()) + " " + now.getFullYear();
+  }
+
+  function buildCalendar() {
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth();
+    var firstDay = new Date(year, month, 1).getDay();
+    var daysThisMonth = new Date(year, month + 1, 0).getDate();
+    var daysPreviousMonth = new Date(year, month, 0).getDate();
+    var html = "<tr><th>Su</th><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th></tr>";
+    var cell = 0;
+    var day = 1;
+    var nextDay = 1;
+    var row;
+    var column;
+    var previousDay;
+
+    document.getElementById("month-title").innerHTML = monthName(month) + " " + year;
+
+    for (row = 0; row < 6; row += 1) {
+      html += "<tr>";
+      for (column = 0; column < 7; column += 1) {
+        cell = row * 7 + column;
+        if (cell < firstDay) {
+          previousDay = daysPreviousMonth - firstDay + cell + 1;
+          html += "<td class='muted'>" + previousDay + "</td>";
+        } else if (day <= daysThisMonth) {
+          if (day === now.getDate()) {
+            html += "<td class='today'>" + day + "</td>";
+          } else {
+            html += "<td>" + day + "</td>";
+          }
+          day += 1;
+        } else {
+          html += "<td class='muted'>" + nextDay + "</td>";
+          nextDay += 1;
+        }
+      }
+      html += "</tr>";
+    }
+    document.getElementById("calendar").innerHTML = html;
+  }
+
+  function renderDashboard(data) {
+    var forecastHtml = "";
+    var i;
+    var item;
+    var forecastDate;
+
+    document.getElementById("temperature").innerHTML = data.current.temperature + "°C";
+    document.getElementById("condition").innerHTML = data.current.condition;
+    document.getElementById("weather-meta").innerHTML = "Humidity " + data.current.humidity + "% &nbsp; Wind " + data.current.wind + " km/h";
+    document.getElementById("sun").innerHTML = "Sunrise " + data.sunrise + " &nbsp; Sunset " + data.sunset;
+    document.getElementById("lunar").innerHTML = data.lunar;
+
+    for (i = 0; i < data.forecast.length; i += 1) {
+      item = data.forecast[i];
+      forecastDate = new Date(item.date + "T12:00:00");
+      forecastHtml += "<div class='forecast-day'>";
+      forecastHtml += "<div class='forecast-name'>" + shortDayName(forecastDate.getDay()) + "</div>";
+      forecastHtml += "<div class='forecast-text'>" + item.condition + "</div>";
+      forecastHtml += "<div class='forecast-temp'>" + item.high + "° / " + item.low + "°</div>";
+      forecastHtml += "</div>";
+    }
+
+    document.getElementById("forecast-row").innerHTML = forecastHtml;
+    document.getElementById("footer").innerHTML = "Updated " + data.updated;
+  }
+
+  function loadDashboard() {
+    var request = new XMLHttpRequest();
+    request.open("GET", "/api/dashboard?t=" + new Date().getTime(), true);
+    request.onreadystatechange = function () {
+      var data;
+      if (request.readyState === 4) {
+        if (request.status >= 200 && request.status < 300) {
+          try {
+            data = JSON.parse(request.responseText);
+            renderDashboard(data);
+          } catch (error) {
+            document.getElementById("condition").innerHTML = "Data error";
+          }
+        } else {
+          document.getElementById("condition").innerHTML = "Weather unavailable";
+        }
+      }
+    };
+    request.send(null);
+  }
+
+  updateClock();
+  buildCalendar();
+  loadDashboard();
+  window.setInterval(updateClock, CLOCK_MS);
+  window.setInterval(loadDashboard, REFRESH_MS);
+  window.setInterval(buildCalendar, REFRESH_MS);
+}());

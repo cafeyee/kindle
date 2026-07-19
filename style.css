@@ -1,1 +1,204 @@
-body{margin:0;padding:0;background:#f2f2f2;color:#000;font-family:Georgia,serif}.container{width:92%;max-width:760px;margin:0 auto;padding:20px 0}.top{display:flex;border-bottom:3px solid #000;padding-bottom:18px}.clock-panel{width:50%;text-align:center}.weather-panel{width:50%;text-align:center;border-left:1px solid #999}.time{font-size:110px;font-weight:bold;line-height:1;margin-top:20px}.date{font-size:24px;margin-top:20px}.city{font-size:30px;font-weight:bold;margin-top:10px}.temperature{font-size:90px;font-weight:bold;line-height:1.1}.condition{font-size:28px;margin-bottom:15px}.meta{font-size:22px;margin-bottom:8px}.forecast{padding:20px 0;border-bottom:2px solid #999}#forecast-row{display:flex;justify-content:space-between}.forecast-day{width:19%;text-align:center}.forecast-name{font-size:24px;font-weight:bold}.forecast-temp{margin-top:8px;font-size:20px}.calendar-section{margin-top:24px}.calendar-section h2{text-align:center;font-size:44px;margin-bottom:20px}#calendar{width:100%;border-collapse:collapse;table-layout:fixed}#calendar th{font-size:28px;padding-bottom:15px}#calendar td{text-align:center;font-size:34px;height:68px}.today{background:#000;color:#fff}.updated{margin-top:20px;text-align:center;color:#777;font-size:22px}
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #fff;
+  color: #000;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+#dashboard {
+  box-sizing: border-box;
+  width: 758px;
+  height: 1024px;
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0 auto;
+  padding: 14px 24px 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+#top-panel {
+  display: table;
+  width: 100%;
+  height: 27%;
+  table-layout: fixed;
+  border-bottom: 3px solid #000;
+}
+
+.top-cell {
+  display: table-cell;
+  width: 50%;
+  text-align: center;
+  vertical-align: middle;
+}
+
+#clock-panel {
+  padding-right: 14px;
+}
+
+#weather-panel {
+  padding-left: 14px;
+  border-left: 1px solid #777;
+}
+
+#time {
+  white-space: nowrap;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 138px;
+  font-weight: bold;
+  line-height: 0.95;
+  letter-spacing: -8px;
+}
+
+#date {
+  margin-top: 12px;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+#lunar {
+  margin-top: 7px;
+  font-size: 20px;
+}
+
+#city {
+  font-size: 29px;
+  font-weight: bold;
+}
+
+#temperature {
+  margin-top: 2px;
+  font-size: 80px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+#condition {
+  margin-top: 3px;
+  font-size: 27px;
+  font-weight: bold;
+}
+
+#weather-meta, #sun {
+  margin-top: 7px;
+  font-size: 19px;
+}
+
+#forecast-panel {
+  box-sizing: border-box;
+  height: 17%;
+  padding: 13px 0 11px;
+  border-bottom: 2px solid #777;
+}
+
+#forecast-row {
+  display: table;
+  width: 100%;
+  height: 100%;
+  table-layout: fixed;
+}
+
+.forecast-day {
+  display: table-cell;
+  width: 20%;
+  padding: 0 4px;
+  text-align: center;
+  vertical-align: middle;
+  border-right: 1px solid #bbb;
+}
+
+.forecast-day:last-child {
+  border-right: 0;
+}
+
+.forecast-name {
+  font-size: 23px;
+  font-weight: bold;
+}
+
+.forecast-text {
+  min-height: 40px;
+  margin-top: 5px;
+  font-size: 17px;
+  line-height: 1.12;
+}
+
+.forecast-temp {
+  margin-top: 7px;
+  font-size: 19px;
+  font-weight: bold;
+}
+
+#calendar-panel {
+  box-sizing: border-box;
+  height: 51%;
+  padding-top: 12px;
+}
+
+#month-title {
+  height: 48px;
+  text-align: center;
+  font-size: 39px;
+  font-weight: bold;
+  line-height: 48px;
+}
+
+#calendar {
+  width: 100%;
+  height: calc(100% - 48px);
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+#calendar th {
+  height: 44px;
+  padding: 0;
+  border-bottom: 1px solid #777;
+  font-size: 24px;
+}
+
+#calendar td {
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 31px;
+  font-weight: bold;
+}
+
+#calendar td.muted {
+  color: #aaa;
+  font-weight: normal;
+}
+
+#calendar td.today {
+  background: #000;
+  color: #fff;
+}
+
+#footer {
+  box-sizing: border-box;
+  height: 5%;
+  padding-top: 7px;
+  border-top: 1px solid #aaa;
+  text-align: center;
+  font-size: 18px;
+  color: #555;
+}
+
+@media screen and (max-width: 600px) {
+  #dashboard { padding-left: 12px; padding-right: 12px; }
+  #time { font-size: 104px; letter-spacing: -6px; }
+  #date { font-size: 21px; }
+  #lunar { font-size: 17px; }
+  #temperature { font-size: 66px; }
+  #condition { font-size: 22px; }
+  #weather-meta, #sun { font-size: 16px; }
+  .forecast-name { font-size: 19px; }
+  .forecast-text { font-size: 14px; }
+  .forecast-temp { font-size: 17px; }
+  #calendar td { font-size: 27px; }
+}
