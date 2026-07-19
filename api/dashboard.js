@@ -1,68 +1,16 @@
-const LAT = -41.2865;
-const LON = 174.7762;
-const TIMEZONE = "Pacific/Auckland";
-
-function iconKey(code) {
-  if (code === 0) return "sun";
-  if (code === 1 || code === 2) return "partly";
-  if (code === 3 || code === 45 || code === 48) return "cloud";
-  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return "rain";
-  if ((code >= 71 && code <= 77) || code === 85 || code === 86) return "snow";
-  if (code >= 95) return "storm";
-  return "cloud";
-}
-
-function condition(code) {
-  const map = {0:"Clear sky",1:"Mainly clear",2:"Partly cloudy",3:"Overcast",45:"Fog",48:"Rime fog",51:"Light drizzle",53:"Drizzle",55:"Heavy drizzle",56:"Freezing drizzle",57:"Heavy freezing drizzle",61:"Light rain",63:"Rain",65:"Heavy rain",66:"Freezing rain",67:"Heavy freezing rain",71:"Light snow",73:"Snow",75:"Heavy snow",77:"Snow grains",80:"Light showers",81:"Rain showers",82:"Heavy showers",85:"Snow showers",86:"Heavy snow showers",95:"Thunderstorm",96:"Thunderstorm with hail",99:"Heavy thunderstorm"};
-  return map[code] || "Weather";
-}
-
-function getParts(date, options) {
-  const parts = new Intl.DateTimeFormat("en-NZ", options).formatToParts(date);
-  const values = {};
-  for (const part of parts) values[part.type] = part.value;
-  return values;
-}
-
-function wellingtonClock(date) {
-  const values = getParts(date, {timeZone:TIMEZONE,weekday:"long",year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit",hour12:false});
-  const numeric = getParts(date, {timeZone:TIMEZONE,year:"numeric",month:"numeric",day:"numeric"});
-  return {hour:Number(values.hour),minute:Number(values.minute),year:Number(numeric.year),month:Number(numeric.month),day:Number(numeric.day),dateText:values.weekday + ", " + values.day + " " + values.month + " " + values.year};
-}
-
-function weekdayForDate(value) {
-  return new Intl.DateTimeFormat("en-NZ", {timeZone:"UTC",weekday:"short"}).format(new Date(value + "T12:00:00Z"));
-}
-
-function lunarDate(date) {
-  try {
-    return "农历 " + new Intl.DateTimeFormat("zh-CN-u-ca-chinese", {timeZone:TIMEZONE,year:"numeric",month:"long",day:"numeric"}).format(date);
-  } catch (error) {
-    return "Lunar date unavailable";
-  }
-}
-
-function timeOnly(value) {
-  return String(value || "").slice(11, 16);
-}
-
-function updatedTime(date) {
-  return new Intl.DateTimeFormat("en-NZ", {timeZone:TIMEZONE,hour:"2-digit",minute:"2-digit",hour12:false}).format(date);
-}
-
-module.exports = async function handler(req, res) {
-  try {
-    const url = "https://api.open-meteo.com/v1/forecast?latitude=" + LAT + "&longitude=" + LON + "&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&forecast_days=6&timezone=" + encodeURIComponent(TIMEZONE);
-    const response = await fetch(url);
-    if (!response.ok) throw new Error("Weather service error");
-    const weather = await response.json();
-    const forecast = [];
-    for (let i = 1; i <= 5; i += 1) {
-      forecast.push({date:weather.daily.time[i],day:weekdayForDate(weather.daily.time[i]),condition:condition(weather.daily.weather_code[i]),icon:iconKey(weather.daily.weather_code[i]),high:Math.round(weather.daily.temperature_2m_max[i]),low:Math.round(weather.daily.temperature_2m_min[i])});
-    }
-    res.setHeader("Cache-Control", "s-maxage=900, stale-while-revalidate=1800");
-    res.status(200).json({clock:wellingtonClock(new Date()),current:{temperature:Math.round(weather.current.temperature_2m),humidity:Math.round(weather.current.relative_humidity_2m),wind:Math.round(weather.current.wind_speed_10m),condition:condition(weather.current.weather_code),icon:iconKey(weather.current.weather_code)},sunrise:timeOnly(weather.daily.sunrise[0]),sunset:timeOnly(weather.daily.sunset[0]),forecast:forecast,lunar:lunarDate(new Date()),updated:updatedTime(new Date())});
-  } catch (error) {
-    res.status(502).json({error:"Weather data unavailable"});
-  }
-};
+const LAT=-41.2865,LON=174.7762,TIMEZONE="Pacific/Auckland";
+function condition(c){const m={0:"Clear sky",1:"Mainly clear",2:"Partly cloudy",3:"Overcast",45:"Fog",48:"Rime fog",51:"Light drizzle",53:"Drizzle",55:"Heavy drizzle",56:"Freezing drizzle",57:"Heavy freezing drizzle",61:"Light rain",63:"Rain",65:"Heavy rain",66:"Freezing rain",67:"Heavy freezing rain",71:"Light snow",73:"Snow",75:"Heavy snow",77:"Snow grains",80:"Light showers",81:"Rain showers",82:"Heavy showers",85:"Snow showers",86:"Heavy snow showers",95:"Thunderstorm",96:"Thunderstorm with hail",99:"Heavy thunderstorm"};return m[c]||"Weather"}
+function iconKey(c){const m={0:"clear",1:"mainly",2:"partly",3:"cloud",45:"fog",48:"rime",51:"drizzle1",53:"drizzle2",55:"drizzle3",56:"freezingDrizzle",57:"freezingDrizzle",61:"rain2",63:"rain3",65:"rain4",66:"freezingRain",67:"freezingRain",71:"snow",73:"snow",75:"heavySnow",77:"snowGrains",80:"shower2",81:"shower3",82:"shower4",85:"snowShower",86:"heavySnowShower",95:"storm",96:"hail",99:"hail"};return m[c]||"cloud"}
+function parts(date,options){const p=new Intl.DateTimeFormat("en-NZ",options).formatToParts(date),v={};for(const x of p)v[x.type]=x.value;return v}
+function clock(date){const a=parts(date,{timeZone:TIMEZONE,weekday:"long",year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit",hour12:false}),n=parts(date,{timeZone:TIMEZONE,year:"numeric",month:"numeric",day:"numeric"});return{hour:Number(a.hour),minute:Number(a.minute),year:Number(n.year),month:Number(n.month),day:Number(n.day),dateText:a.weekday+", "+a.day+" "+a.month+" "+a.year}}
+function weekday(v){return new Intl.DateTimeFormat("en-NZ",{timeZone:"UTC",weekday:"short"}).format(new Date(v+"T12:00:00Z"))}
+function lunar(date){try{return"农历 "+new Intl.DateTimeFormat("zh-CN-u-ca-chinese",{timeZone:TIMEZONE,year:"numeric",month:"long",day:"numeric"}).format(date)}catch(e){return"Lunar date unavailable"}}
+const LUNAR_DAYS=["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十","十一","十二","十三","十四","十五","十六","十七","十八","十九","二十","廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+function lunarParts(date){const p=new Intl.DateTimeFormat("zh-CN-u-ca-chinese",{timeZone:TIMEZONE,month:"long",day:"numeric"}).formatToParts(date),v={month:"",day:0};for(const x of p){if(x.type==="month")v.month=x.value;if(x.type==="day")v.day=Number(x.value)}return v}
+function lunarLabel(date){const l=lunarParts(date);if(!l.day)return"农历";if(l.day===1)return l.month+"初一";return LUNAR_DAYS[l.day]||"农历"}
+function calendarData(now){const c=clock(now),year=c.year,monthIndex=c.month-1,first=new Date(Date.UTC(year,monthIndex,1,12)).getUTCDay(),days=new Date(Date.UTC(year,monthIndex+1,0,12)).getUTCDate(),previousDays=new Date(Date.UTC(year,monthIndex,0,12)).getUTCDate(),cells=[];let day=1,next=1;for(let i=0;i<42;i++){let date,solar,muted;if(i<first){solar=previousDays-first+i+1;date=new Date(Date.UTC(year,monthIndex-1,solar,12));muted=true}else if(day<=days){solar=day;date=new Date(Date.UTC(year,monthIndex,solar,12));muted=false;day++}else{solar=next;date=new Date(Date.UTC(year,monthIndex+1,solar,12));muted=true;next++}cells.push({solar:solar,lunar:lunarLabel(date),muted:muted,today:!muted&&solar===c.day})}const title=new Intl.DateTimeFormat("en-NZ",{timeZone:TIMEZONE,month:"long",year:"numeric"}).format(now);return{monthTitle:title,cells:cells}}
+function time(v){return String(v||"").slice(11,16)}
+function updated(date){return new Intl.DateTimeFormat("en-NZ",{timeZone:TIMEZONE,hour:"2-digit",minute:"2-digit",hour12:false}).format(date)}
+function compass(deg){const names=["N","NE","E","SE","S","SW","W","NW"];return names[Math.round((((deg%360)+360)%360)/45)%8]}
+function arrowRotation(deg){return(Math.round((((deg%360)+360)%360)/45)%8)*45}
+module.exports=async function handler(req,res){try{const url="https://api.open-meteo.com/v1/forecast?latitude="+LAT+"&longitude="+LON+"&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant&forecast_days=6&timezone="+encodeURIComponent(TIMEZONE);const r=await fetch(url);if(!r.ok)throw new Error("Weather service error");const w=await r.json(),forecast=[];for(let i=1;i<=5;i++){const deg=Math.round(w.daily.wind_direction_10m_dominant[i]);forecast.push({date:w.daily.time[i],day:weekday(w.daily.time[i]),condition:condition(w.daily.weather_code[i]),icon:iconKey(w.daily.weather_code[i]),high:Math.round(w.daily.temperature_2m_max[i]),low:Math.round(w.daily.temperature_2m_min[i]),windDirection:compass(deg),arrowRotation:arrowRotation(deg),wind:Math.round(w.daily.wind_speed_10m_max[i]),gust:Math.round(w.daily.wind_gusts_10m_max[i])})}res.setHeader("Cache-Control","s-maxage=900, stale-while-revalidate=1800");res.status(200).json({clock:clock(new Date()),current:{temperature:Math.round(w.current.temperature_2m),humidity:Math.round(w.current.relative_humidity_2m),wind:Math.round(w.current.wind_speed_10m),condition:condition(w.current.weather_code),icon:iconKey(w.current.weather_code)},sunrise:time(w.daily.sunrise[0]),sunset:time(w.daily.sunset[0]),forecast:forecast,calendar:calendarData(new Date()),updated:updated(new Date())})}catch(e){res.status(502).json({error:"Weather data unavailable"})}}

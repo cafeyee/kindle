@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Kindle Dashboard</title>
-  <link rel="stylesheet" href="style.css?v=24">
+  <link rel="stylesheet" href="style.css?v=31">
 </head>
 <body>
   <div id="dashboard">
@@ -12,23 +12,27 @@
       <div id="clock-panel" class="top-cell">
         <div id="time">--:--</div>
         <div id="date">Starting...</div>
-        <div id="lunar">Lunar date pending</div>
       </div>
       <div id="weather-panel" class="top-cell">
         <div id="city">Wellington</div>
-        <div id="current-weather-line"><span id="current-icon" class="weather-icon current-icon"></span><span id="temperature">--°C</span></div>
+        <div id="current-weather-line">
+          <span id="current-icon" class="weather-icon current-icon"></span>
+          <span id="temperature">--°C</span>
+        </div>
         <div id="condition">Loading weather...</div>
         <div id="weather-meta">Humidity -- &nbsp; Wind --</div>
         <div id="sun">Sunrise -- &nbsp; Sunset --</div>
       </div>
     </div>
-    <div id="forecast-panel"><div id="forecast-row">Loading forecast...</div></div>
+    <div id="forecast-panel">
+      <div id="forecast-row">Loading forecast...</div>
+    </div>
     <div id="calendar-panel">
       <div id="month-title">Calendar</div>
       <table id="calendar"></table>
     </div>
     <div id="footer">Weather update pending</div>
   </div>
-  <script src="script.js?v=24"></script>
+  <script src="script.js?v=31"></script>
 </body>
 </html>
