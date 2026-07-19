@@ -1,18 +1,1 @@
-{
-  "functions": {
-    "api/dashboard.js": {
-      "runtime": "nodejs22.x"
-    }
-  },
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        }
-      ]
-    }
-  ]
-}
+{}
