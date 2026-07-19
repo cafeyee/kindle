@@ -2,39 +2,33 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Kindle Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=22">
 </head>
 <body>
-  <div class="page">
-    <div class="top-row">
-      <div class="clock-panel">
-        <div id="time" class="time">--:--</div>
-        <div id="date" class="date">Starting...</div>
+  <div id="dashboard">
+    <div id="top-panel">
+      <div id="clock-panel" class="top-cell">
+        <div id="time">--:--</div>
+        <div id="date">Starting...</div>
+        <div id="lunar">Lunar date pending</div>
       </div>
-      <div class="weather-panel">
-        <div class="city">Wellington</div>
-        <div id="temperature" class="temperature">--&deg;C</div>
-        <div id="condition" class="condition">Loading weather...</div>
-        <div id="humidity" class="meta">Humidity: --</div>
-        <div id="wind" class="meta">Wind: --</div>
-      </div>
-    </div>
-
-    <div class="forecast-section">
-      <div id="forecast-row" class="forecast-row">
-        <div class="forecast-day">Loading forecast...</div>
+      <div id="weather-panel" class="top-cell">
+        <div id="city">Wellington</div>
+        <div id="temperature">--°C</div>
+        <div id="condition">Loading weather...</div>
+        <div id="weather-meta">Humidity -- &nbsp; Wind --</div>
+        <div id="sun">Sunrise -- &nbsp; Sunset --</div>
       </div>
     </div>
-
-    <div class="calendar-section">
-      <div id="month-title" class="month-title">Calendar</div>
-      <table id="calendar" class="calendar"></table>
+    <div id="forecast-panel"><div id="forecast-row">Loading forecast...</div></div>
+    <div id="calendar-panel">
+      <div id="month-title">Calendar</div>
+      <table id="calendar"></table>
     </div>
-
-    <div id="updated" class="updated">Weather update pending</div>
+    <div id="footer">Weather update pending</div>
   </div>
-  <script src="script.js"></script>
+  <script src="script.js?v=22"></script>
 </body>
 </html>
