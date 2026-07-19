@@ -2,6 +2,16 @@ const LAT = -41.2865;
 const LON = 174.7762;
 const TIMEZONE = "Pacific/Auckland";
 
+function iconKey(code) {
+  if (code === 0) return "sun";
+  if (code === 1 || code === 2) return "partly";
+  if (code === 3 || code === 45 || code === 48) return "cloud";
+  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return "rain";
+  if ((code >= 71 && code <= 77) || code === 85 || code === 86) return "snow";
+  if (code >= 95) return "storm";
+  return "cloud";
+}
+
 function condition(code) {
   const map = {0:"Clear sky",1:"Mainly clear",2:"Partly cloudy",3:"Overcast",45:"Fog",48:"Rime fog",51:"Light drizzle",53:"Drizzle",55:"Heavy drizzle",56:"Freezing drizzle",57:"Heavy freezing drizzle",61:"Light rain",63:"Rain",65:"Heavy rain",66:"Freezing rain",67:"Heavy freezing rain",71:"Light snow",73:"Snow",75:"Heavy snow",77:"Snow grains",80:"Light showers",81:"Rain showers",82:"Heavy showers",85:"Snow showers",86:"Heavy snow showers",95:"Thunderstorm",96:"Thunderstorm with hail",99:"Heavy thunderstorm"};
   return map[code] || "Weather";
@@ -48,10 +58,10 @@ module.exports = async function handler(req, res) {
     const weather = await response.json();
     const forecast = [];
     for (let i = 1; i <= 5; i += 1) {
-      forecast.push({date:weather.daily.time[i],day:weekdayForDate(weather.daily.time[i]),condition:condition(weather.daily.weather_code[i]),high:Math.round(weather.daily.temperature_2m_max[i]),low:Math.round(weather.daily.temperature_2m_min[i])});
+      forecast.push({date:weather.daily.time[i],day:weekdayForDate(weather.daily.time[i]),condition:condition(weather.daily.weather_code[i]),icon:iconKey(weather.daily.weather_code[i]),high:Math.round(weather.daily.temperature_2m_max[i]),low:Math.round(weather.daily.temperature_2m_min[i])});
     }
     res.setHeader("Cache-Control", "s-maxage=900, stale-while-revalidate=1800");
-    res.status(200).json({clock:wellingtonClock(new Date()),current:{temperature:Math.round(weather.current.temperature_2m),humidity:Math.round(weather.current.relative_humidity_2m),wind:Math.round(weather.current.wind_speed_10m),condition:condition(weather.current.weather_code)},sunrise:timeOnly(weather.daily.sunrise[0]),sunset:timeOnly(weather.daily.sunset[0]),forecast:forecast,lunar:lunarDate(new Date()),updated:updatedTime(new Date())});
+    res.status(200).json({clock:wellingtonClock(new Date()),current:{temperature:Math.round(weather.current.temperature_2m),humidity:Math.round(weather.current.relative_humidity_2m),wind:Math.round(weather.current.wind_speed_10m),condition:condition(weather.current.weather_code),icon:iconKey(weather.current.weather_code)},sunrise:timeOnly(weather.daily.sunrise[0]),sunset:timeOnly(weather.daily.sunset[0]),forecast:forecast,lunar:lunarDate(new Date()),updated:updatedTime(new Date())});
   } catch (error) {
     res.status(502).json({error:"Weather data unavailable"});
   }
