@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Kindle Dashboard</title>
-  <link rel="stylesheet" href="style.css?v=31">
+  <link rel="stylesheet" href="style.css?v=32">
 </head>
 <body>
-  <div id="dashboard">
+  <div id="dashboard" class="mode-lunar">
     <div id="top-panel">
       <div id="clock-panel" class="top-cell">
         <div id="time">--:--</div>
@@ -15,24 +15,17 @@
       </div>
       <div id="weather-panel" class="top-cell">
         <div id="city">Wellington</div>
-        <div id="current-weather-line">
-          <span id="current-icon" class="weather-icon current-icon"></span>
-          <span id="temperature">--°C</span>
-        </div>
+        <div id="current-weather-line"><span id="current-icon" class="weather-icon current-icon"></span><span id="temperature">--°C</span></div>
         <div id="condition">Loading weather...</div>
-        <div id="weather-meta">Humidity -- &nbsp; Wind --</div>
-        <div id="sun">Sunrise -- &nbsp; Sunset --</div>
+        <div id="weather-meta">Humidity -- · Wind --</div>
+        <div id="sun">Sunrise -- · Sunset --</div>
       </div>
     </div>
-    <div id="forecast-panel">
-      <div id="forecast-row">Loading forecast...</div>
-    </div>
-    <div id="calendar-panel">
-      <div id="month-title">Calendar</div>
-      <table id="calendar"></table>
-    </div>
-    <div id="footer">Weather update pending</div>
+    <div id="forecast-panel"><div id="forecast-row">Loading forecast...</div></div>
+    <div id="calendar-panel"><div id="month-title">Calendar</div><table id="calendar"></table></div>
+    <div id="mantra-panel"><div id="mantra-kicker">Daily Mantra</div><div id="mantra-text">Loading mantra...</div></div>
+    <div id="footer"><span id="updated">Weather update pending</span><button id="mode-toggle" type="button">Mode</button></div>
   </div>
-  <script src="script.js?v=31"></script>
+  <script src="script.js?v=32"></script>
 </body>
 </html>
