@@ -1,4 +1,4 @@
-KINDLE DASHBOARD V3.2
+KINDLE DASHBOARD FINAL REPLACEMENT
 
 Upload this exact structure to the GitHub repository root:
 
@@ -15,12 +15,9 @@ Build Command: empty
 Output Directory: empty
 Install Command: empty
 
-After deployment, test /api/dashboard first, then open /?v=32 on Kindle.
+After deployment, test /api/dashboard first, then open /?v=33 on Kindle.
 
-Modes:
-Lunar mode shows lunar dates inside the calendar and hides the mantra.
-Mantra mode shows the daily mantra and hides lunar dates in the calendar.
-The toggle button is in the footer. The selected mode is saved in localStorage.
+V3.1 moves Chinese lunar dates into each monthly calendar cell. Lunar month names appear only on lunar day one, for example 六月初一.
 
-Mantra cycle:
-Day 1 starts on 2026-07-20 Wellington time. Edit MANTRA_START in api/dashboard.js if needed.
+V3.3 moves the mode button to the upper-right weather panel. Clicking the month title is a fallback toggle.
+Mantra mode hides lunar labels. Lunar mode hides the mantra. Day 1 starts on 2026-07-20 Wellington time.
